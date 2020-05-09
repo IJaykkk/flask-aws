@@ -8,7 +8,8 @@ class Config(object):
     CSRF_ENABLED = False
     SECRET_KEY = 'this-really-needs-to-be-changed' # TODO
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
+    JWT_SECRET_KEY = 'jwt-secret-string' # TODO
 
 
 class ProductionConfig(Config):
