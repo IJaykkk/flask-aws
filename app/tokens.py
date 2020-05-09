@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
 from flask_restful import Resource, reqparse
 from app.models import UserModel, RevokedTokenModel
@@ -6,6 +8,9 @@ from app.models import UserModel, RevokedTokenModel
 parser = reqparse.RequestParser()
 parser.add_argument('username', help = 'This field cannot be blank', required = True)
 parser.add_argument('password', help = 'This field cannot be blank', required = True)
+
+def to_identity(s):
+    return s + datetime.now().strftime("%m/%d/%Y %H:%M:%S")
 
 
 class UserRegistration(Resource):
@@ -24,8 +29,8 @@ class UserRegistration(Resource):
 
         try:
             new_user.save_to_db()
-            access_token = create_access_token(identity = data['username'])
-            refresh_token = create_refresh_token(identity = data['username'])
+            access_token = create_access_token(identity = to_identity(data['username']))
+            refresh_token = create_refresh_token(identity = to_identity(data['username']))
             return {
                 'message': 'User {} was created'.format(data['username']),
                 'access_token': access_token,
@@ -48,8 +53,8 @@ class UserLogin(Resource):
             }
 
         if UserModel.verify_hash(data['password'], current_user.password):
-            access_token = create_access_token(identity = data['username'])
-            refresh_token = create_refresh_token(identity = data['username'])
+            access_token = create_access_token(identity = to_identity(data['username']))
+            refresh_token = create_refresh_token(identity = to_identity(data['username']))
             return {
                 'message': 'Logged in as {}'.format(current_user.username),
                 'access_token': access_token,
@@ -97,7 +102,7 @@ class TokenRefresh(Resource):
     @jwt_refresh_token_required
     def post(self):
         current_user = get_jwt_identity()
-        access_token = create_access_token(identity = current_user)
+        access_token = create_access_token(identity = to_identity(current_user))
         return {
             'access_token': access_token
         }
