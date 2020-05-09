@@ -2,15 +2,19 @@ from datetime import datetime
 
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
 from flask_restful import Resource, reqparse
-from app.models import UserModel, RevokedTokenModel
+from app.models.user import UserModel
+from app.models.revoked_token import RevokedTokenModel
 
 
 parser = reqparse.RequestParser()
 parser.add_argument('username', help = 'This field cannot be blank', required = True)
 parser.add_argument('password', help = 'This field cannot be blank', required = True)
 
-def to_identity(s):
-    return s + datetime.now().strftime("%m/%d/%Y %H:%M:%S")
+def to_identity(username):
+    return {
+        'username': username,
+        'time': datetime.now().strftime("%m/%d/%Y %H:%M:%S")
+    }
 
 
 class UserRegistration(Resource):
@@ -114,11 +118,3 @@ class AllUsers(Resource):
 
     def delete(self):
         return UserModel.delete_all()
-
-
-class SecretResource(Resource):
-    @jwt_required
-    def get(self):
-        return {
-            'answer': 42
-        }
