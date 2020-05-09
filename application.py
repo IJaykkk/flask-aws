@@ -15,7 +15,12 @@ jwt = JWTManager(app)
 def create_tables():
     db.create_all()
 
-from app import views, resources
+from app import views, resources, models
+
+@jwt.token_in_blacklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+    jti = decrypted_token['jti']
+    return models.RevokedTokenModel.is_jti_blacklisted(jti)
 
 api.add_resource(resources.UserRegistration, '/registration')
 api.add_resource(resources.UserLogin, '/login')
