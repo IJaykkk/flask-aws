@@ -1,4 +1,4 @@
-## Installation
+# Installation
 At project root directory,
 
 ```bash
@@ -8,150 +8,533 @@ cd /vagrant/flask-aws
 flask run
 ```
 
-## Token
+# API
+### Caveat
+To use token, include "Authorization: Bearer <access_token or refresh_token>" in hearder to access endpoints.
 
-### Registration
+### Token
 
-#### Explaination
-To register a user, and then get `access_token` as well as `refresh_token` back.  
++ Registration
+    + Explaination
+    
+        To register a user, and then get `access_token` as well as `refresh_token` back.  
 `access_token` is used to access api with person information. Default expiration time is 30 mins.  
 `refresh_token` is used to get another `access_token`. Default expiration time is 30 days.  
 
-#### Endpoint
-post `localhost:5000/registration`
+    + Endpoint
+    
+        post `localhost:5000/registration`
 
-#### Parameters
-1. username
-2. password
+    + Parameters
+    ```bash
+    {
+        'username': 'xxx',
+        'password': 'xxx'
+    }
+    ```
 
-#### Response
-1. Success (200)
-```bash
-{
-    'message': 'User <username> was created',
-    'access_token': access_token,
-    'refresh_token': refresh_token
-}
-```
+    + Response
+        + Success (200)
+        ```bash
+        {
+            'message': 'User <username> was created',
+            'access_token': access_token,
+            'refresh_token': refresh_token
+        }
+        ```
 
-1. Failure (500)
-```bash
-{
-    'message': 'Something went wrong'
+        + Failure (500)
+        ```bash
+        {
+            'message': 'Registration went wrong'
+        
+        }
+        ```
 
-}
-```
++ Login
+    + Explaination
+    
+        Use `username` and `password` to login, and then get `access_token` as well as `refresh_token` back.
+    
+    + Endpoint
+    
+        post `localhost:5000/login`
 
+    + Parameters
+    ```bash
+    {
+        'username': 'xxx',
+        'password': 'xxx'
+    }
+    ```
 
----
+    + Response
+        + Success (200)
+        ```bash
+        {
+            'message': 'Logged in as <username>',
+            'access_token': access_token,
+            'refresh_token': refresh_token
+        }
+        ```
+        
+        + Failure (200)
+        ```bash
+        {
+            'message': 'Wrong credentials'
+        }
+        ```
 
-
-### Login
-
-#### Explaination
-Use `username` and `password` to login, and then get `access_token` as well as `refresh_token` back.
-
-#### Endpoint
-post `localhost:5000/login`
-
-#### Header
-Require "Authorization: Bearer <access_token>" in hearder.
-
-#### Response
-1. Success (200)
-```bash
-{
-    'message': 'Logged in as <username>',
-    'access_token': access_token,
-    'refresh_token': refresh_token
-}
-```
-
-2. Failure (200)
-```bash
-{
-    'message': 'Wrong credentials'
-}
-```
-
-
----
-
-
-### Logout access token
-
-#### Explaination
-To revoke `access_token`.
-
-#### Endpoint
-post `localhost:5000/logout/access`
-
-#### Header
-Require "Authorization: Bearer <access_token>" in hearder.
-
-#### Response
-1. Success (200)
-```bash
-{
-    'message': 'Access token has been revoked'
-}
-```
-
-2. Failure (500)
-```bash
-{
-    'message': 'Logout access went wrong'
-}
-```
-
-
----
++ Logout (access token)
+    + Explaination
+    
+        To revoke `access_token`.
+    
+    + Endpoint
+    
+        post `localhost:5000/logout/access`
+    
+    + Response
+        + Success (200)
+        ```bash
+        {
+            'message': 'Access token has been revoked'
+        }
+        ```
+        
+        + Failure (500)
+        ```bash
+        {
+            'message': 'Logout access went wrong'
+        }
+        ```
 
 
-### Logout refresh token
++ Logout (refresh token)
+    + Explaination
+    
+        To revoke `refresh_token`.
+    
+    + Endpoint
+    
+        post `localhost:5000/logout/refresh`
+    
+    + Response
+        + Success (200)
+        ```bash
+        {
+            'message': 'Refresh token has been revoked'
+        }
+        ```
+        
+        + Failure (500)
+        ```bash
+        {
+            'message': 'Logout refresh went wrong'
+        }
+        ```
 
-#### Explaination
-To revoke `refresh_token`.
++ Get another access token (refresh token)
+    + Explaination
+    
+        Use `refresh_token` to get another valid `access_token`.
+    
+    + Endpoint
+    
+        post `localhost:5000/token/refresh`
+    
+    + Response
+        + Success (200)
+        ```bash
+        {
+            'access_token': access_token
+        }
+        ```
 
-#### Endpoint
-post `localhost:5000/logout/refresh`
+### User
++ Get users (access token)
+    + Explaination:
+    
+        To get all users.
 
-#### Header
-Require "Authorization: Bearer <refresh_token>" in hearder.
+    + Endpoint
+    
+        get `localhost:5000/users`
 
-#### Response
-1. Success (200)
-```bash
-{
-    'message': 'Refresh token has been revoked'
-}
-```
+    + Response
+        + Success (200)
+        ```bash
+        [
+            {
+                'id': 1,
+                'username': xxx
+            },
+        ]
+        ```
 
-2. Failure (500)
-```bash
-{
-    'message': 'Logout refresh went wrong'
-}
-```
+        + Failure (500)
+        ```bash
+        {
+            'message': 'Something went wrong'
+        
+        }
+        ```
 
----
+### Group
++ Get groups (access token)
+    + Explaination:
+    
+        To get all groups.
 
+    + Endpoint
+    
+        get `localhost:5000/groups`
 
-### Get another access token
+    + Response
+        + Success (200)
+        ```bash
+        [
+            {
+                'id': 1
+                'name': 'NYU friends',
+                'users': [
+                    {
+                        'id': 1,
+                        'username': xxx
+                    }
+                ]
+            },
+        ]
+        ```
 
-#### Explaination
-Use `refresh_token` to get another valid `access_token`.
+        + Failure (500)
+        ```bash
+        {
+            'message': 'Something went wrong'
+        
+        }
+        ```
 
-#### Endpoint
-post `localhost:5000/token/refresh`
++ Get a group (access token)
+    + Explaination:
+    
+        To get information of a group.
 
-#### Header
-Require "Authorization: Bearer <refresh_token>" in hearder.
+    + Endpoint
+    
+        get `localhost:5000/group/{id}`
 
-#### Response
-1. Success (200)
-```bash
-{
-    'access_token': access_token
-}
-```
+    + Response
+        + Success (200)
+        ```bash
+        {
+            'id': 1
+            'name': 'NYU friends',
+            'users': [
+                {
+                    'id': 1,
+                    'username': 'xxx'
+                }
+            ],
+            'events': [
+                {
+                    'id': 1
+                    'name': 'xxx',
+                    'added_date': '05/10/2020',
+                    'pictures': {
+                        'id': 1,
+                        'class': 'xxx' or null,
+                        'is_bestshot': false,
+                        'url': 'xxx'
+                    }
+                },
+            ]
+        }
+        ```
+
+        + Failure (500)
+        ```bash
+        {
+            'message': 'Something went wrong'
+        
+        }
+        ```
+        
++ Add group (access token)
+    + Explaination:
+    
+        To create a group.
+
+    + Endpoint
+    
+        post `localhost:5000/groups`
+    
+    + Parameters
+    ```bash
+    {
+        'name': 'xxx',
+        'user_ids': [1, 2, 3, 4]
+    }
+
+    + Response
+        + Success (200)
+        ```bash
+        {
+            'message': 'Group has been created'
+        }
+        ```
+
+        + Failure (500)
+        ```bash
+        {
+            'message': 'Something went wrong'
+        
+        }
+        ```
+
+### Event
++ Get events (access token)
+    + Explaination:
+    
+        To get all events.
+
+    + Endpoint
+    
+        get `localhost:5000/events`
+
+    + Response
+        + Success (200)
+        ```bash
+        [
+            {
+                'id': 1
+                'name': 'xxx',
+                'group': {
+                    'id': 1,
+                    'name': 'xxx'
+                },
+                'added_date': '05/10/2020',
+                'picture': {
+                    'id': 1,
+                    'class': 'xxx' or null,
+                    'is_bestshot': false,
+                    'url': 'xxx'
+                }
+            },
+        ]
+        ```
+
+        + Failure (500)
+        ```bash
+        {
+            'message': 'Something went wrong'
+        
+        }
+        ```
+
++ Get event (access token)
+    + Explaination:
+    
+        To get information of a event.
+
+    + Endpoint
+    
+        get `localhost:5000/event/{id}`
+
+    + Response
+        + Success (200)
+        ```bash
+        {
+            'id': 1
+            'name': 'xxx',
+            'group': {
+                'id': 1,
+                'name': 'xxx'
+            },
+            'added_date': '05/10/2020',
+            'pictures': [
+                {
+                    'id': 1,
+                    'class': 'xxx' or null,
+                    'is_bestshot': false,
+                    'url': 'xxx'
+                },
+            ],
+            subscription: {
+                class: "people" or "landscape"
+            }
+        }
+        ```
+
+        + Failure (500)
+        ```bash
+        {
+            'message': 'Something went wrong'
+        
+        }
+        ```
+
++ Create event (access token)
+    + Explaination:
+    
+        To create a event.
+
+    + Endpoint
+    
+        post `localhost:5000/events`
+    
+    + Parameter
+    ```bash
+    {
+        'name': 'xxx',
+        'added_date': "mm/dd/yyyy",
+        'group: {
+            'id': 1
+        },
+        'pictures': [ 'url1', 'url2', 'url3'],
+        'subscription': {
+            'class': 'people'
+        }
+    }
+    ```
+
+    + Response
+        + Success (200)
+        ```bash
+        {
+            'message': 'event has been created'
+        }
+        ```
+
+        + Failure (500)
+        ```bash
+        {
+            'message': 'Something went wrong'
+        
+        }
+        ```
+
+### Subscription
++ Add Subscription (access token)
+    + Explaination:
+    
+        To add a new subscription for a event.
+
+    + Endpoint
+    
+        post `localhost:5000/event/{id}/subscriptions`
+
+    + Parameter
+    ```bash
+    {
+        'class': 'people'
+    }
+    ```
+
+    + Response
+        + Success (200)
+        ```bash
+        {
+            'message': 'Subscription has been created'
+        }
+        ```
+
+        + Failure (500)
+        ```bash
+        {
+            'message': 'Something went wrong'
+        
+        }
+        ```
+ 
+ 
+ ### Picture
+ + Register picture (access token)
+    + Explaination:
+    
+        To register the pictures that have been uploaded by the frontend in the database.
+
+    + Endpoint
+    
+        post `localhost:5000/event/{id}/pictures`
+    
+    + Parameters
+    ```bash
+    [ 'url1', 'url2', 'url3' ]
+    ```
+
+    + Response
+        + Success (200)
+        ```bash
+        {
+            'message': 'Pictures has been registered'
+        }
+        ```
+
+        + Failure (500)
+        ```bash
+        {
+            'message': 'Something went wrong'
+        
+        }
+        ```
+        
+ + Update is_bestshot (refresh token) (**for yangyao**)
+    + Explaination:
+    
+        To update `is_bestshot`  in `pictures` table.
+
+    + Endpoint
+    
+        post `localhost:5000/pictures/is_bestshot`
+    
+    + Parameters
+    ```bash
+    [ 'url1', 'url2', 'url3' ]
+    ```
+
+    + Response
+        + Success (200)
+        ```bash
+        {
+            'message': 'Bestshots have been updated'
+        }
+        ```
+
+        + Failure (500)
+        ```bash
+        {
+            'message': 'Something went wrong'
+        
+        }
+        ```
+
+ + Update class (refresh token)  (**for yangyao**)
+    + Explaination:
+    
+        To update field `class` in `pictures` table.
+
+    + Endpoint
+    
+        post `localhost:5000/pictures/class`
+    
+    + Parameters
+    ```bash
+    [ 'url1', 'url2', 'url3' ]
+    ```
+
+    + Response
+        + Success (200)
+        ```bash
+        {
+            'message': 'Picture class has been registered'
+        }
+        ```
+
+        + Failure (500)
+        ```bash
+        {
+            'message': 'Something went wrong'
+        
+        }
+        ```

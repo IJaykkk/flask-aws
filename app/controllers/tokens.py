@@ -42,7 +42,7 @@ class UserRegistration(Resource):
             }
         except:
             return {
-                'message': 'Something went wrong'
+                'message': 'Registration went wrong'
             }, 500
 
 
