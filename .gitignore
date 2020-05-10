@@ -2,3 +2,8 @@ virt
 __pycache__
 .ebignore
 .ebextensions
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
