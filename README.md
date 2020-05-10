@@ -9,7 +9,8 @@ flask run
 ```
 
 ## Token
-### registration
+
+### Registration
 
 #### Explaination
 To register a user, and then get `access_token` as well as `refresh_token` back.  
@@ -45,7 +46,7 @@ post `localhost:5000/registration`
 ---
 
 
-### login
+### Login
 
 #### Explaination
 Use `username` and `password` to login, and then get `access_token` as well as `refresh_token` back.
@@ -77,7 +78,7 @@ Require "Authorization: Bearer <access_token>" in hearder.
 ---
 
 
-### logout/access
+### Logout access token
 
 #### Explaination
 To revoke `access_token`.
@@ -107,7 +108,7 @@ Require "Authorization: Bearer <access_token>" in hearder.
 ---
 
 
-### logout/refresh
+### Logout refresh token
 
 #### Explaination
 To revoke `refresh_token`.
@@ -136,7 +137,7 @@ Require "Authorization: Bearer <refresh_token>" in hearder.
 ---
 
 
-### token/refresh
+### Get another access token
 
 #### Explaination
 Use `refresh_token` to get another valid `access_token`.
