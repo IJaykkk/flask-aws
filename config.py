@@ -7,10 +7,10 @@ class Config(object):
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = False
-    SECRET_KEY = 'this-really-needs-to-be-changed' # TODO
+    SECRET_KEY = os.environ['SECRET_KEY']
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    JWT_SECRET_KEY = 'jwt-secret-string' # TODO
+    JWT_SECRET_KEY = os.environ['JWT_SECRET_KEY']
     JWT_BLACKLIST_ENABLED = True
     JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=1800)
