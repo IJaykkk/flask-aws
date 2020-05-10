@@ -1,4 +1,4 @@
-from application import db
+from app import db
 
 class RevokedTokenModel(db.Model):
     __tablename__ = 'revoked_tokens'

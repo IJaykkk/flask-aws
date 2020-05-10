@@ -34,3 +34,7 @@ api.add_resource(tokens.UserLogoutRefresh, '/logout/refresh')
 api.add_resource(tokens.TokenRefresh, '/token/refresh')
 api.add_resource(tokens.AllUsers, '/users')
 api.add_resource(secrets.SecretResource, '/secret')
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')
+
