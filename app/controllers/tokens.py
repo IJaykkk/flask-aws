@@ -98,7 +98,7 @@ class UserLogoutRefresh(Resource):
             }
         except:
             return {
-                'message': 'Login refresh went wrong'
+                'message': 'Logout refresh went wrong'
             }, 500
 
 

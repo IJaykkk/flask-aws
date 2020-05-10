@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -12,6 +13,7 @@ class Config(object):
     JWT_SECRET_KEY = 'jwt-secret-string' # TODO
     JWT_BLACKLIST_ENABLED = True
     JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=1800)
 
 
 class ProductionConfig(Config):
