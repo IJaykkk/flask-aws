@@ -1,5 +1,7 @@
 from passlib.hash import pbkdf2_sha256 as sha256
 from app import db
+from app.models.user_group import user_group
+
 
 class UserModel(db.Model):
     __tablename__ = 'users'
@@ -9,9 +11,17 @@ class UserModel(db.Model):
     password = db.Column(db.String(120), nullable=False)
     icon_url = db.Column(db.String(240), nullable=False)
 
+    groups = db.relationship('GroupModel', secondary=user_group, lazy='subquery', backref=db.backref('users', lazy=True))
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'icon_url': self.icon_url
+        }
 
     @staticmethod
     def generate_hash(password):
@@ -27,13 +37,7 @@ class UserModel(db.Model):
 
     @classmethod
     def return_all(cls):
-        def to_json(x):
-            return {
-                'id': x.id,
-                'username': x.username,
-                'icon_url': x.icon_url
-            }
-        return list(map(lambda x: to_json(x), UserModel.query.all()))
+        return list(map(lambda x: x.to_json(), cls.query.all()))
 
     @classmethod
     def delete_all(cls):

@@ -13,7 +13,7 @@ api = Api(app)
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
 
-from app.controllers import tokens, users, secrets
+from app.controllers import tokens, users, secrets, groups
 from app.models.revoked_token import RevokedTokenModel
 
 @jwt.token_in_blacklist_loader
@@ -25,15 +25,23 @@ def check_if_token_in_blacklist(decrypted_token):
 def user_identity_lookup(user):
     return user['username']
 
+# Token
 api.add_resource(tokens.UserRegistration, '/registration')
 api.add_resource(tokens.UserLogin, '/login')
 api.add_resource(tokens.UserLogoutAccess, '/logout/access')
 api.add_resource(tokens.UserLogoutRefresh, '/logout/refresh')
 api.add_resource(tokens.TokenRefresh, '/token/refresh')
+
+# Secret for test
 api.add_resource(secrets.SecretResource, '/secret')
 
 # Users
 api.add_resource(users.UserListResource, '/users')
+
+# Groups
+api.add_resource(groups.GroupListResource, '/groups')
+api.add_resource(groups.GroupResource, '/group/<int:id>')
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
 
