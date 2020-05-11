@@ -17,7 +17,7 @@ class GroupListResource(Resource):
                 'message': 'User {} does not exist'.format(username)
             }
 
-        return GroupModel.find_by_username(current_user.username)
+        return list(map(lambda x: x.to_json(with_user=True), current_user.groups))
 
     @jwt_required
     def post(self):
@@ -32,6 +32,7 @@ class GroupListResource(Resource):
 
         data = parser.parse_args()
 
+        # Only check if user_ids list is empty
         if not data['user_ids'] or isinstance(data['user_ids'][0], str):
             return {
                 'message': 'user_ids must be not empty list and its element must be integer'
@@ -75,19 +76,11 @@ class GroupResource(Resource):
             }
 
         group = groups[0]
-
-        # relationships: events
-        events_info = []
-        for event in group.events:
-            info = event.to_json()
-            picture = event.pictures[0]
-            info.update({
-                'pictures': picture.to_json()
-            })
-            events_info.append(info)
-
-        res = group.to_json()
+        res = group.to_json(with_user=True)
         res.update({
-            'events': events_info
+            'events': list(map(
+                lambda x: x.to_json(with_group=False, multi_pics=False),
+                group.events))
         })
+
         return res

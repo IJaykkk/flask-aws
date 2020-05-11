@@ -8,22 +8,17 @@ class GroupModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True, nullable=False)
 
-    events = db.relationship('EventModel', backref='group', lazy=True)
+    events = db.relationship('EventModel', backref='group', lazy=False)
 
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
 
-    def to_json(self):
-        return {
+    def to_json(self, with_user=True):
+        res = {
             'id': self.id,
-            'name': self.name,
-            'users': list(map(lambda x: x.to_json(), self.users))
+            'name': self.name
         }
-
-    @classmethod
-    def find_by_username(cls, username):
-        return list(map(
-            lambda x: x.to_json(),
-            cls.query.filter(cls.users.any(username=username)).all()
-        ))
+        if with_user:
+            res.update({ 'users': list(map(lambda x: x.to_json(), self.users)) })
+        return res

@@ -13,7 +13,7 @@ api = Api(app)
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
 
-from app.controllers import tokens, users, secrets, groups
+from app.controllers import tokens, users, secrets, groups, events
 from app.models.revoked_token import RevokedTokenModel
 
 @jwt.token_in_blacklist_loader
@@ -41,6 +41,11 @@ api.add_resource(users.UserListResource, '/users')
 # Groups
 api.add_resource(groups.GroupListResource, '/groups')
 api.add_resource(groups.GroupResource, '/group/<int:id>')
+
+# Events
+api.add_resource(events.EventListResource, '/events')
+api.add_resource(events.EventResource, '/event/<int:id>')
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
