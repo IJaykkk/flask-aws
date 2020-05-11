@@ -65,17 +65,15 @@ class GroupResource(Resource):
                 'message': 'User {} does not exist'.format(username)
             }
 
-        groups = list(filter(
-            lambda x: x.id == id,
-            current_user.groups
-        ))
+        group = GroupModel.query.join(GroupModel.users).filter(
+            UserModel.username == username,
+            GroupModel.id == id).first()
 
-        if not groups:
+        if not group:
             return {
                 'message': 'Group id {} does not exist'.format(id)
             }
 
-        group = groups[0]
         res = group.to_json(with_user=True)
         res.update({
             'events': list(map(
