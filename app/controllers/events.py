@@ -50,11 +50,23 @@ class EventListResource(Resource):
 
         data = parser.parse_args()
 
-        # only check if group json or pictures list are empty
+        # check if group json or pictures list are empty
         if not data['group'] or 'id' not in data['group'] or not data['pictures']:
             return {
                 'message': 'group should not be empty hash. pictures should contain urls'
             }
+
+        # check if current_user has access to the group
+        username = get_jwt_identity()
+        group = GroupModel.query.join(GroupModel.users).filter(
+            UserModel.username == username,
+            GroupModel.id == data['group']['id']).first()
+
+        if not group:
+            return {
+                'message': 'Group id {} does not exist'.format(data['group']['id'])
+            }
+
 
         # TODO subscription
         new_event = EventModel(
