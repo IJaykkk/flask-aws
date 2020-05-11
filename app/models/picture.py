@@ -9,7 +9,6 @@ class PictureModel(db.Model):
     is_bestshot = db.Column(db.Boolean, default=False)
     url = db.Column(db.String(240), nullable=False, index=True)
 
-
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()

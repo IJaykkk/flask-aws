@@ -16,7 +16,6 @@ def to_identity(username):
 
 
 class UserRegistration(Resource):
-
     def post(self):
         parser = RequestParser()
         parser.add_argument('username', help = 'This field cannot be blank', required = True)
@@ -52,7 +51,6 @@ class UserRegistration(Resource):
 
 
 class UserLogin(Resource):
-
     def post(self):
         parser = RequestParser()
         parser.add_argument('username', help = 'This field cannot be blank', required = True)

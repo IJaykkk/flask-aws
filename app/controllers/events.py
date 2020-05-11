@@ -11,6 +11,7 @@ from app.models.event import PictureModel
 
 flatten = itertools.chain.from_iterable
 
+
 class EventListResource(Resource):
     @jwt_required
     def get(self):
