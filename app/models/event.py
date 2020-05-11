@@ -7,7 +7,7 @@ class EventModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     group_id = db.Column(db.Integer, db.ForeignKey('groups.id'), nullable=False, index=True)
-    name = db.Column(db.String(120), unique=True, nullable=False)
+    name = db.Column(db.String(120), nullable=False)
     added_date = db.Column(db.DateTime, nullable=False)
 
     pictures = db.relationship('PictureModel', backref='event', lazy=True)
