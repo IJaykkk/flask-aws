@@ -2,13 +2,11 @@ from datetime import datetime
 
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
 from flask_restful import Resource, reqparse
+from flask_restful.reqparse import RequestParser
+
 from app.models.user import UserModel
 from app.models.revoked_token import RevokedTokenModel
 
-
-parser = reqparse.RequestParser()
-parser.add_argument('username', help = 'This field cannot be blank', required = True)
-parser.add_argument('password', help = 'This field cannot be blank', required = True)
 
 def to_identity(username):
     return {
@@ -18,7 +16,13 @@ def to_identity(username):
 
 
 class UserRegistration(Resource):
+
     def post(self):
+        parser = RequestParser()
+        parser.add_argument('username', help = 'This field cannot be blank', required = True)
+        parser.add_argument('password', help = 'This field cannot be blank', required = True)
+        parser.add_argument('icon_url', help = 'This field cannot be blank', required = True)
+
         data = parser.parse_args()
 
         if UserModel.find_by_username(data['username']):
@@ -28,7 +32,8 @@ class UserRegistration(Resource):
 
         new_user = UserModel(
             username = data['username'],
-            password = UserModel.generate_hash(data['password'])
+            password = UserModel.generate_hash(data['password']),
+            icon_url = data['icon_url']
         )
 
         try:
@@ -47,7 +52,12 @@ class UserRegistration(Resource):
 
 
 class UserLogin(Resource):
+
     def post(self):
+        parser = RequestParser()
+        parser.add_argument('username', help = 'This field cannot be blank', required = True)
+        parser.add_argument('password', help = 'This field cannot be blank', required = True)
+
         data = parser.parse_args()
         current_user = UserModel.find_by_username(data['username'])
 
@@ -110,11 +120,3 @@ class TokenRefresh(Resource):
         return {
             'access_token': access_token
         }
-
-
-class AllUsers(Resource):
-    def get(self):
-        return UserModel.return_all()
-
-    def delete(self):
-        return UserModel.delete_all()

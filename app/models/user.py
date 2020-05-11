@@ -5,8 +5,9 @@ class UserModel(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key = True)
-    username = db.Column(db.String(120), unique = True, nullable = False)
-    password = db.Column(db.String(120), nullable = False)
+    username = db.Column(db.String(120), unique=True, nullable=False, index=True)
+    password = db.Column(db.String(120), nullable=False)
+    icon_url = db.Column(db.String(240), nullable=False)
 
     def save_to_db(self):
         db.session.add(self)
@@ -28,12 +29,11 @@ class UserModel(db.Model):
     def return_all(cls):
         def to_json(x):
             return {
+                'id': x.id,
                 'username': x.username,
-                'password': x.password
+                'icon_url': x.icon_url
             }
-        return {
-            'users': list(map(lambda x: to_json(x), UserModel.query.all()))
-        }
+        return list(map(lambda x: to_json(x), UserModel.query.all()))
 
     @classmethod
     def delete_all(cls):
