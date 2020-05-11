@@ -116,3 +116,55 @@ class EventResource(Resource):
 
         res = event.to_json(with_group=True, multi_pics=True)
         return res
+
+
+class PictureListResource(Resource):
+    @jwt_required
+    def post(self, event_id):
+        parser = RequestParser()
+        parser.add_argument('pictures',
+            type=list,
+            location='json',
+            help='This field cannot be blank',
+            required=True)
+
+        data = parser.parse_args()
+
+        # check if group json or pictures list are empty
+        if not data['pictures']:
+            return {
+                'message': 'pictures field should not be empty'
+            }
+
+        event = EventModel.query.get(event_id)
+
+        if not event:
+            return {
+                'message': 'Event id {} does not exist'.format(event_id)
+            }
+
+        # check if current_user has access to the group
+        username = get_jwt_identity()
+        group_id = event.group.id
+        group = GroupModel.query.join(GroupModel.users).filter(
+            UserModel.username == username,
+            GroupModel.id == group_id).first()
+
+        if not group:
+            return {
+                'message': 'Group id {} does not exist'.format(group_id)
+            }
+
+        for url in data['pictures']:
+            pic = PictureModel(url=url)
+            event.pictures.append(pic)
+
+        try:
+            event.save_to_db()
+            return {
+                'message': 'Pictures has been registered'
+            }
+        except:
+            return {
+                'message': 'Something went wrong'
+            }, 500

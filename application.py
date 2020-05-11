@@ -45,6 +45,7 @@ api.add_resource(groups.GroupResource, '/group/<int:id>')
 # Events
 api.add_resource(events.EventListResource, '/events')
 api.add_resource(events.EventResource, '/event/<int:id>')
+api.add_resource(events.PictureListResource, '/event/<int:event_id>/pictures')
 
 
 if __name__ == '__main__':

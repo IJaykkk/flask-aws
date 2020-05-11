@@ -241,12 +241,14 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
                     'id': 1
                     'name': 'xxx',
                     'added_date': '05/10/2020',
-                    'pictures': {
-                        'id': 1,
-                        'class': 'xxx' or null,
-                        'is_bestshot': false,
-                        'url': 'xxx'
-                    }
+                    'pictures': [
+                        {
+                            'id': 1,
+                            'class': 'xxx' or null,
+                            'is_bestshot': false,
+                            'url': 'xxx'
+                        },
+                    ]
                 },
             ]
         }
@@ -275,6 +277,7 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         'name': 'xxx',
         'user_ids': [1, 2, 3, 4]
     }
+    ```
 
     + Response
         + Success (200)
@@ -314,12 +317,14 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
                     'name': 'xxx'
                 },
                 'added_date': '05/10/2020',
-                'picture': {
-                    'id': 1,
-                    'class': 'xxx' or null,
-                    'is_bestshot': false,
-                    'url': 'xxx'
-                }
+                'pictures': [
+                    {
+                        'id': 1,
+                        'class': 'xxx' or null,
+                        'is_bestshot': false,
+                        'url': 'xxx'
+                    }
+                ]
             },
         ]
         ```
@@ -460,7 +465,9 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
     
     + Parameters
     ```bash
-    [ 'url1', 'url2', 'url3' ]
+    {
+        'pictures': [ 'url1', 'url2', 'url3' ]
+    }
     ```
 
     + Response
@@ -490,7 +497,9 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
     
     + Parameters
     ```bash
-    [ 'url1', 'url2', 'url3' ]
+    {
+        'pictures': [ 'url1', 'url2', 'url3' ]
+    }
     ```
 
     + Response
@@ -520,7 +529,9 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
     
     + Parameters
     ```bash
-    [ 'url1', 'url2', 'url3' ]
+    {
+        'pictures': [ 'url1', 'url2', 'url3' ]
+    }
     ```
 
     + Response
