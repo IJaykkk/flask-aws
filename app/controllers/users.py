@@ -3,7 +3,7 @@ from flask_restful import Resource
 from app.models.user import UserModel
 
 
-class AllUsers(Resource):
+class UserListResource(Resource):
     @jwt_required
     def get(self):
         return UserModel.return_all()

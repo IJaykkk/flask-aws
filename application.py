@@ -30,9 +30,10 @@ api.add_resource(tokens.UserLogin, '/login')
 api.add_resource(tokens.UserLogoutAccess, '/logout/access')
 api.add_resource(tokens.UserLogoutRefresh, '/logout/refresh')
 api.add_resource(tokens.TokenRefresh, '/token/refresh')
-api.add_resource(users.AllUsers, '/users')
 api.add_resource(secrets.SecretResource, '/secret')
 
+# Users
+api.add_resource(users.UserListResource, '/users')
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
 
