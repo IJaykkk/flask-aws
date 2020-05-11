@@ -1,8 +1,5 @@
 from app import db
-from app.models.user import UserModel
-from app.models.group import GroupModel
-from app.models.event import EventModel
-from app.models.revoked_token import RevokedTokenModel
+from app.models import *
 
 db.create_all()
 
