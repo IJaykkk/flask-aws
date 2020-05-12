@@ -13,7 +13,7 @@ api = Api(app)
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
 
-from app.controllers import tokens, users, secrets, groups, events
+from app.controllers import (tokens, users, secrets, groups, events, pictures)
 from app.models.revoked_token import RevokedTokenModel
 
 @jwt.token_in_blacklist_loader
@@ -46,6 +46,10 @@ api.add_resource(groups.GroupResource, '/group/<int:id>')
 api.add_resource(events.EventListResource, '/events')
 api.add_resource(events.EventResource, '/event/<int:id>')
 api.add_resource(events.PictureListResource, '/event/<int:event_id>/pictures')
+
+# Pictures
+api.add_resource(pictures.PictureBestshotResource, '/pictures/is_bestshot')
+api.add_resource(pictures.PictureClassResource, '/pictures/class')
 
 
 if __name__ == '__main__':
