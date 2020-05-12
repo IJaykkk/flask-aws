@@ -27,7 +27,7 @@ class PictureBestshotResource(Resource):
         if not data['bestshots']:
             return {
                 'message': 'bestshots field should not be empty'
-            }
+            }, 400
 
         event_id = int(data['event_id'])
         event = EventModel.query.get(event_id)
@@ -36,7 +36,7 @@ class PictureBestshotResource(Resource):
         if not event:
             return {
                 'message': 'Event id {} does not exist'.format(event_id)
-            }
+            }, 404
 
         pictures = PictureModel.query.filter(
             PictureModel.event_id == event_id,
@@ -77,7 +77,7 @@ class PictureClassResource(Resource):
         if not data['classes']:
             return {
                 'message': 'classes field should not be empty'
-            }
+            }, 400
 
         event_id = int(data['event_id'])
         event = EventModel.query.get(event_id)
@@ -86,7 +86,7 @@ class PictureClassResource(Resource):
         if not event:
             return {
                 'message': 'Event id {} does not exist'.format(event_id)
-            }
+            }, 404
 
         pictures = PictureModel.query.filter(
             PictureModel.event_id == event_id,

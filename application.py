@@ -13,7 +13,7 @@ api = Api(app)
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
 
-from app.controllers import (tokens, users, secrets, groups, events, pictures)
+from app.controllers import (tokens, users, groups, events, pictures)
 from app.models.revoked_token import RevokedTokenModel
 
 @jwt.token_in_blacklist_loader
@@ -31,9 +31,6 @@ api.add_resource(tokens.UserLogin, '/login')
 api.add_resource(tokens.UserLogoutAccess, '/logout/access')
 api.add_resource(tokens.UserLogoutRefresh, '/logout/refresh')
 api.add_resource(tokens.TokenRefresh, '/token/refresh')
-
-# Secret for test
-api.add_resource(secrets.SecretResource, '/secret')
 
 # Users
 api.add_resource(users.UserListResource, '/users')

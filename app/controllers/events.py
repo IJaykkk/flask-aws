@@ -22,7 +22,7 @@ class EventListResource(Resource):
         if not current_user:
             return {
                 'message': 'User {} does not exist'.format(username)
-            }
+            }, 403
 
         events = flatten(list(map(
             lambda x: x.events,
@@ -58,7 +58,7 @@ class EventListResource(Resource):
         if not data['group'] or 'id' not in data['group'] or not data['pictures']:
             return {
                 'message': 'group should not be empty hash. pictures should contain urls'
-            }
+            }, 404
 
         # check if current_user has access to the group
         username = get_jwt_identity()
@@ -69,7 +69,7 @@ class EventListResource(Resource):
         if not group:
             return {
                 'message': 'Group id {} does not exist'.format(data['group']['id'])
-            }
+            }, 404
 
         new_event = EventModel(
             name=data['name'],
@@ -100,21 +100,21 @@ class EventResource(Resource):
         if not current_user:
             return {
                 'message': 'User {} does not exist'.format(username)
-            }
+            }, 403
 
         event = EventModel.query.get(id)
 
         if not event:
             return {
                 'message': 'Event id {} does not exist'.format(id)
-            }
+            }, 404
 
         user = list(filter(lambda x: x.id == current_user.id, event.group.users))
 
         if not user:
             return {
                 'message': 'Event id {} does not exist'.format(id)
-            }
+            }, 404
 
         res = event.to_json(with_group=True, multi_pics=True, with_sub=current_user.id)
         return res
@@ -136,14 +136,14 @@ class PictureListResource(Resource):
         if not data['pictures']:
             return {
                 'message': 'pictures field should not be empty'
-            }
+            }, 400
 
         event = EventModel.query.get(event_id)
 
         if not event:
             return {
                 'message': 'Event id {} does not exist'.format(event_id)
-            }
+            }, 404
 
         # check if current_user has access to the group
         username = get_jwt_identity()
@@ -155,7 +155,7 @@ class PictureListResource(Resource):
         if not group:
             return {
                 'message': 'Group id {} does not exist'.format(group_id)
-            }
+            }, 404
 
         for url in data['pictures']:
             pic = PictureModel(url=url)
@@ -187,7 +187,7 @@ class SubscriptionResource(Resource):
         if data['class'] not in ["people", "landscape", "people/landscape"]:
             return {
                 'message': 'class field should not be empty'
-            }
+            }, 400
 
         event = EventModel.query.get(event_id)
 
@@ -195,7 +195,7 @@ class SubscriptionResource(Resource):
         if not event:
             return {
                 'message': 'Event id {} does not exist'.format(event_id)
-            }
+            }, 404
 
         # check if current_user has access to the group
         username = get_jwt_identity()
@@ -207,7 +207,7 @@ class SubscriptionResource(Resource):
         if not group:
             return {
                 'message': 'Group id {} does not exist'.format(group_id)
-            }
+            }, 404
 
         current_user = UserModel.find_by_username(username)
         sub = SubscriptionModel.query.filter_by(user_id=current_user.id, event_id=event_id).first()

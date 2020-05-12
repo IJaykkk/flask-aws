@@ -15,7 +15,7 @@ class GroupListResource(Resource):
         if not current_user:
             return {
                 'message': 'User {} does not exist'.format(username)
-            }
+            }, 403
 
         return list(map(lambda x: x.to_json(with_user=True), current_user.groups))
 
@@ -36,7 +36,7 @@ class GroupListResource(Resource):
         if not data['user_ids'] or isinstance(data['user_ids'][0], str):
             return {
                 'message': 'user_ids must be not empty list and its element must be integer'
-            }
+            }, 404
 
         new_group = GroupModel(name=data['name'])
         users = UserModel.query.filter(UserModel.id.in_(data['user_ids']))
@@ -63,7 +63,7 @@ class GroupResource(Resource):
         if not current_user:
             return {
                 'message': 'User {} does not exist'.format(username)
-            }
+            }, 403
 
         group = GroupModel.query.join(GroupModel.users).filter(
             UserModel.username == username,
@@ -72,7 +72,7 @@ class GroupResource(Resource):
         if not group:
             return {
                 'message': 'Group id {} does not exist'.format(id)
-            }
+            }, 404
 
         res = group.to_json(with_user=True)
         res.update({

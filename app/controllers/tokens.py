@@ -27,7 +27,7 @@ class UserRegistration(Resource):
         if UserModel.find_by_username(data['username']):
             return {
                 'message': 'User {} already exists'. format(data['username'])
-            }
+            }, 401
 
         new_user = UserModel(
             username = data['username'],
@@ -61,8 +61,8 @@ class UserLogin(Resource):
 
         if not current_user:
             return {
-                'message': 'User {} does not exist'.format(data['username'])
-            }
+                'message': 'Wrong credentials'
+            }, 401
 
         if UserModel.verify_hash(data['password'], current_user.password):
             access_token = create_access_token(identity = to_identity(data['username']))
@@ -75,7 +75,7 @@ class UserLogin(Resource):
         else:
             return {
                 'message': 'Wrong credentials'
-            }
+            }, 401
 
 
 class UserLogoutAccess(Resource):

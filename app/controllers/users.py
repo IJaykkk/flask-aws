@@ -7,7 +7,3 @@ class UserListResource(Resource):
     @jwt_required
     def get(self):
         return UserModel.return_all()
-
-    @jwt_required
-    def delete(self):
-        return UserModel.delete_all()
