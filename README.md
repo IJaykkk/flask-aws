@@ -28,8 +28,8 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
     + Parameters
     ```bash
     {
-        'username': 'xxx',
-        'password': 'xxx'
+        "username": "xxx",
+        "password": "xxx"
     }
     ```
 
@@ -37,16 +37,16 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         + Success (200)
         ```bash
         {
-            'message': 'User <username> was created',
-            'access_token': access_token,
-            'refresh_token': refresh_token
+            "message": "User <username> was created",
+            "access_token": access_token,
+            "refresh_token": refresh_token
         }
         ```
 
         + Failure (500)
         ```bash
         {
-            'message': 'Registration went wrong'
+            "message": "Registration went wrong"
         
         }
         ```
@@ -63,8 +63,8 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
     + Parameters
     ```bash
     {
-        'username': 'xxx',
-        'password': 'xxx'
+        "username": "xxx",
+        "password": "xxx"
     }
     ```
 
@@ -72,16 +72,16 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         + Success (200)
         ```bash
         {
-            'message': 'Logged in as <username>',
-            'access_token': access_token,
-            'refresh_token': refresh_token
+            "message": "Logged in as <username>",
+            "access_token": access_token,
+            "refresh_token": refresh_token
         }
         ```
         
         + Failure (200)
         ```bash
         {
-            'message': 'Wrong credentials'
+            "message": "Wrong credentials"
         }
         ```
 
@@ -98,14 +98,14 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         + Success (200)
         ```bash
         {
-            'message': 'Access token has been revoked'
+            "message": "Access token has been revoked"
         }
         ```
         
         + Failure (500)
         ```bash
         {
-            'message': 'Logout access went wrong'
+            "message": "Logout access went wrong"
         }
         ```
 
@@ -123,14 +123,14 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         + Success (200)
         ```bash
         {
-            'message': 'Refresh token has been revoked'
+            "message": "Refresh token has been revoked"
         }
         ```
         
         + Failure (500)
         ```bash
         {
-            'message': 'Logout refresh went wrong'
+            "message": "Logout refresh went wrong"
         }
         ```
 
@@ -147,7 +147,7 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         + Success (200)
         ```bash
         {
-            'access_token': access_token
+            "access_token": access_token
         }
         ```
 
@@ -166,8 +166,8 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         ```bash
         [
             {
-                'id': 1,
-                'username': xxx
+                "id": 1,
+                "username": xxx
             },
         ]
         ```
@@ -175,7 +175,7 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         + Failure (500)
         ```bash
         {
-            'message': 'Something went wrong'
+            "message": "Something went wrong"
         
         }
         ```
@@ -195,12 +195,12 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         ```bash
         [
             {
-                'id': 1
-                'name': 'NYU friends',
-                'users': [
+                "id": 1
+                "name": "NYU friends",
+                "users": [
                     {
-                        'id': 1,
-                        'username': xxx
+                        "id": 1,
+                        "username": xxx
                     }
                 ]
             },
@@ -210,7 +210,7 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         + Failure (500)
         ```bash
         {
-            'message': 'Something went wrong'
+            "message": "Something went wrong"
         
         }
         ```
@@ -228,25 +228,25 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         + Success (200)
         ```bash
         {
-            'id': 1
-            'name': 'NYU friends',
-            'users': [
+            "id": 1
+            "name": "NYU friends",
+            "users": [
                 {
-                    'id': 1,
-                    'username': 'xxx'
+                    "id": 1,
+                    "username": "xxx"
                 }
             ],
-            'events': [
+            "events": [
                 {
-                    'id': 1
-                    'name': 'xxx',
-                    'added_date': '05/10/2020',
-                    'pictures': [
+                    "id": 1
+                    "name": "xxx",
+                    "added_date": "05/10/2020",
+                    "pictures": [
                         {
-                            'id': 1,
-                            'class': 'xxx' or null,
-                            'is_bestshot': false,
-                            'url': 'xxx'
+                            "id": 1,
+                            "class": "xxx" or null,
+                            "is_bestshot": false,
+                            "url": "xxx"
                         },
                     ]
                 },
@@ -257,7 +257,7 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         + Failure (500)
         ```bash
         {
-            'message': 'Something went wrong'
+            "message": "Something went wrong"
         
         }
         ```
@@ -274,8 +274,8 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
     + Parameters
     ```bash
     {
-        'name': 'xxx',
-        'user_ids': [1, 2, 3, 4]
+        "name": "xxx",
+        "user_ids": [1, 2, 3, 4]
     }
     ```
 
@@ -283,14 +283,14 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         + Success (200)
         ```bash
         {
-            'message': 'Group has been created'
+            "message": "Group has been created"
         }
         ```
 
         + Failure (500)
         ```bash
         {
-            'message': 'Something went wrong'
+            "message": "Something went wrong"
         
         }
         ```
@@ -310,19 +310,19 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         ```bash
         [
             {
-                'id': 1
-                'name': 'xxx',
-                'group': {
-                    'id': 1,
-                    'name': 'xxx'
+                "id": 1
+                "name": "xxx",
+                "group": {
+                    "id": 1,
+                    "name": "xxx"
                 },
-                'added_date': '05/10/2020',
-                'pictures': [
+                "added_date": "05/10/2020",
+                "pictures": [
                     {
-                        'id': 1,
-                        'class': 'xxx' or null,
-                        'is_bestshot': false,
-                        'url': 'xxx'
+                        "id": 1,
+                        "class": "xxx" or null,
+                        "is_bestshot": false,
+                        "url": "xxx"
                     }
                 ]
             },
@@ -332,7 +332,7 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         + Failure (500)
         ```bash
         {
-            'message': 'Something went wrong'
+            "message": "Something went wrong"
         
         }
         ```
@@ -350,28 +350,31 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         + Success (200)
         ```bash
         {
-            'id': 1
-            'name': 'xxx',
-            'group': {
-                'id': 1,
-                'name': 'xxx'
+            "id": 1
+            "name": "xxx",
+            "group": {
+                "id": 1,
+                "name": "xxx"
             },
-            'added_date': '05/10/2020',
-            'pictures': [
+            "added_date": "05/10/2020",
+            "pictures": [
                 {
-                    'id': 1,
-                    'class': 'xxx' or null,
-                    'is_bestshot': false,
-                    'url': 'xxx'
+                    "id": 1,
+                    "class": "xxx" or null,
+                    "is_bestshot": false,
+                    "url": "xxx"
                 },
-            ]
+            ],
+            "subscription": {
+                "class": "people" or "landscape" or "people/landscape"
+            }
         }
         ```
 
         + Failure (500)
         ```bash
         {
-            'message': 'Something went wrong'
+            "message": "Something went wrong"
         
         }
         ```
@@ -388,12 +391,12 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
     + Parameter
     ```bash
     {
-        'name': 'xxx',
-        'added_date': "mm/dd/yyyy",
-        'group: {
-            'id': 1
+        "name": "xxx",
+        "added_date": "mm/dd/yyyy",
+        "group: {
+            "id": 1
         },
-        'pictures': [ 'url1', 'url2', 'url3']
+        "pictures": [ "url1", "url2", "url3"]
     }
     ```
 
@@ -401,18 +404,52 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         + Success (200)
         ```bash
         {
-            'message': 'event has been created'
+            "message": "event has been created"
         }
         ```
 
         + Failure (500)
         ```bash
         {
-            'message': 'Something went wrong'
+            "message": "Something went wrong"
         
         }
         ```
 
+### Subscription
++ Add Subscription (access token)
+    + Explaination:
+    
+        To add a new subscription for a event.
+
+    + Endpoint
+    
+        post `localhost:5000/event/{id}/subscriptions`
+
+    + Parameter
+    ```bash
+    {
+        "class": "people" or "landscape" or "people/landscape"
+    }
+    ```
+
+    + Response
+        + Success (200)
+        ```bash
+        {
+            "message": "Subscription has been created"
+        }
+        ```
+
+        + Failure (500)
+        ```bash
+        {
+            "message": "Something went wrong"
+        
+        }
+        ```
+ 
+ 
  ### Picture
  + Register picture (access token)
     + Explaination:
@@ -426,7 +463,7 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
     + Parameters
     ```bash
     {
-        'pictures': [ 'url1', 'url2', 'url3' ]
+        "pictures": [ "url1", "url2", "url3" ]
     }
     ```
 
@@ -434,14 +471,14 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         + Success (200)
         ```bash
         {
-            'message': 'Pictures has been registered'
+            "message": "Pictures has been registered"
         }
         ```
 
         + Failure (500)
         ```bash
         {
-            'message': 'Something went wrong'
+            "message": "Something went wrong"
         
         }
         ```
@@ -458,7 +495,7 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
     + Parameters
     ```bash
     {
-        'pictures': [ 'url1', 'url2', 'url3' ]
+        "pictures": [ "url1", "url2", "url3" ]
     }
     ```
 
@@ -466,14 +503,14 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         + Success (200)
         ```bash
         {
-            'message': 'Bestshots have been updated'
+            "message": "Bestshots have been updated"
         }
         ```
 
         + Failure (500)
         ```bash
         {
-            'message': 'Something went wrong'
+            "message": "Something went wrong"
         
         }
         ```
@@ -490,7 +527,7 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
     + Parameters
     ```bash
     {
-        'pictures': [ 'url1', 'url2', 'url3' ]
+        "pictures": [ "url1", "url2", "url3" ]
     }
     ```
 
@@ -498,14 +535,14 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         + Success (200)
         ```bash
         {
-            'message': 'Picture class has been registered'
+            "message": "Picture class has been registered"
         }
         ```
 
         + Failure (500)
         ```bash
         {
-            'message': 'Something went wrong'
+            "message": "Something went wrong"
         
         }
         ```

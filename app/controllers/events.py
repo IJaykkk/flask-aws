@@ -39,15 +39,18 @@ class EventListResource(Resource):
             help='This field cannot be blank',
             required=True)
         parser.add_argument('added_date',
-            help='This field cannot be blank')
+            help='This field cannot be blank',
+            required=True)
         parser.add_argument('group',
             type=dict,
             location='json',
-            help='This field cannot be blank')
+            help='This field cannot be blank',
+            required=True)
         parser.add_argument('pictures',
             type=list,
             location='json',
-            help='This field cannot be blank')
+            help='This field cannot be blank',
+            required=True)
 
         data = parser.parse_args()
 
@@ -68,8 +71,6 @@ class EventListResource(Resource):
                 'message': 'Group id {} does not exist'.format(data['group']['id'])
             }
 
-
-        # TODO subscription
         new_event = EventModel(
             name=data['name'],
             added_date=data['added_date'],
@@ -115,7 +116,7 @@ class EventResource(Resource):
                 'message': 'Event id {} does not exist'.format(id)
             }
 
-        res = event.to_json(with_group=True, multi_pics=True)
+        res = event.to_json(with_group=True, multi_pics=True, with_sub=current_user.id)
         return res
 
 
@@ -183,9 +184,9 @@ class SubscriptionResource(Resource):
         data = parser.parse_args()
 
         # check if class is correct type
-        if data['class'] not in ["people", "landscape"]:
+        if data['class'] not in ["people", "landscape", "people/landscape"]:
             return {
-                'message': 'pictures field should not be empty'
+                'message': 'class field should not be empty'
             }
 
         event = EventModel.query.get(event_id)
@@ -209,14 +210,18 @@ class SubscriptionResource(Resource):
             }
 
         current_user = UserModel.find_by_username(username)
-        new_sub = SubscriptionModel(
-            user_id=current_user.id,
-            event_id=event_id,
-            klass=data['class']
-        )
+        sub = SubscriptionModel.query.filter_by(user_id=current_user.id, event_id=event_id).first()
+
+        if not sub:
+            sub = SubscriptionModel(
+                user_id=current_user.id,
+                event_id=event_id,
+                klass=data['class'])
+        else:
+            sub.klass = data['class']
 
         try:
-            new_sub.save_to_db()
+            sub.save_to_db()
             return {
                 'message': 'Subscription has been created'
             }
@@ -224,3 +229,4 @@ class SubscriptionResource(Resource):
             return {
                 'message': 'Something went wrong'
             }, 500
+

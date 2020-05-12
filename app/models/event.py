@@ -1,6 +1,7 @@
 from app import db
 
 from app.models.picture import PictureModel
+from app.models.subscription import SubscriptionModel
 
 class EventModel(db.Model):
     __tablename__ = 'events'
@@ -17,7 +18,7 @@ class EventModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def to_json(self, with_group=True, multi_pics=True):
+    def to_json(self, with_group=True, multi_pics=True, with_sub=None):
         res = {
             'id': self.id,
             'name': self.name,
@@ -35,5 +36,14 @@ class EventModel(db.Model):
                 lambda x: x.to_json(),
                 pictures))
         })
+
+        # with_sub would be user_id if it exists
+        if with_sub:
+            sub = SubscriptionModel.query.filter_by(
+                user_id=with_sub, event_id=self.id).first()
+            tmp_dict = { 'class': sub.klass } if sub else {}
+            res.update({
+                'subscription': tmp_dict
+            })
 
         return res
