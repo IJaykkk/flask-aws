@@ -364,10 +364,7 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
                     'is_bestshot': false,
                     'url': 'xxx'
                 },
-            ],
-            subscription: {
-                class: "people" or "landscape"
-            }
+            ]
         }
         ```
 
@@ -396,10 +393,7 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         'group: {
             'id': 1
         },
-        'pictures': [ 'url1', 'url2', 'url3'],
-        'subscription': {
-            'class': 'people'
-        }
+        'pictures': [ 'url1', 'url2', 'url3']
     }
     ```
 
@@ -419,40 +413,6 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         }
         ```
 
-### Subscription
-+ Add Subscription (access token)
-    + Explaination:
-    
-        To add a new subscription for a event.
-
-    + Endpoint
-    
-        post `localhost:5000/event/{id}/subscriptions`
-
-    + Parameter
-    ```bash
-    {
-        'class': 'people'
-    }
-    ```
-
-    + Response
-        + Success (200)
-        ```bash
-        {
-            'message': 'Subscription has been created'
-        }
-        ```
-
-        + Failure (500)
-        ```bash
-        {
-            'message': 'Something went wrong'
-        
-        }
-        ```
- 
- 
  ### Picture
  + Register picture (access token)
     + Explaination:
