@@ -3,7 +3,8 @@ from flask_restful import Resource, reqparse
 from flask_restful.reqparse import RequestParser
 
 from app import db
-from app.models.event import PictureModel
+from app.models.picture import PictureModel
+from app.models.event import EventModel
 
 
 class PictureBestshotResource(Resource):
@@ -28,8 +29,17 @@ class PictureBestshotResource(Resource):
                 'message': 'bestshots field should not be empty'
             }
 
+        event_id = int(data['event_id'])
+        event = EventModel.query.get(event_id)
+
+        # check if event exists
+        if not event:
+            return {
+                'message': 'Event id {} does not exist'.format(event_id)
+            }
+
         pictures = PictureModel.query.filter(
-            PictureModel.event_id == int(data['event_id']),
+            PictureModel.event_id == event_id,
             PictureModel.url.in_(data['bestshots'])).all()
 
         try:
@@ -69,8 +79,17 @@ class PictureClassResource(Resource):
                 'message': 'classes field should not be empty'
             }
 
+        event_id = int(data['event_id'])
+        event = EventModel.query.get(event_id)
+
+        # check if event exists
+        if not event:
+            return {
+                'message': 'Event id {} does not exist'.format(event_id)
+            }
+
         pictures = PictureModel.query.filter(
-            PictureModel.event_id == int(data['event_id']),
+            PictureModel.event_id == event_id,
             PictureModel.url.in_(data['classes'].keys())).all()
 
         try:

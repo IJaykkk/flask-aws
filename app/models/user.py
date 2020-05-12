@@ -1,6 +1,8 @@
 from passlib.hash import pbkdf2_sha256 as sha256
+
 from app import db
 from app.models.user_group import user_group
+from app.models.subscription import SubscriptionModel
 
 
 class UserModel(db.Model):
@@ -11,7 +13,12 @@ class UserModel(db.Model):
     password = db.Column(db.String(120), nullable=False)
     icon_url = db.Column(db.String(240), nullable=False)
 
-    groups = db.relationship('GroupModel', secondary=user_group, lazy='subquery', backref=db.backref('users', lazy=True))
+    groups = db.relationship('GroupModel',
+        secondary=user_group,
+        lazy='subquery',
+        backref=db.backref('users', lazy=True))
+    events = db.relationship('SubscriptionModel', back_populates="user")
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()

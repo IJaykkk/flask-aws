@@ -11,6 +11,7 @@ class EventModel(db.Model):
     added_date = db.Column(db.DateTime, nullable=False)
 
     pictures = db.relationship('PictureModel', backref='event', lazy=True)
+    users = db.relationship('SubscriptionModel', back_populates="event")
 
     def save_to_db(self):
         db.session.add(self)

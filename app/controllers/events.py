@@ -8,6 +8,7 @@ from app.models.user import UserModel
 from app.models.group import GroupModel
 from app.models.event import EventModel
 from app.models.event import PictureModel
+from app.models.subscription import SubscriptionModel
 
 flatten = itertools.chain.from_iterable
 
@@ -163,6 +164,61 @@ class PictureListResource(Resource):
             event.save_to_db()
             return {
                 'message': 'Pictures has been registered'
+            }
+        except:
+            return {
+                'message': 'Something went wrong'
+            }, 500
+
+
+class SubscriptionResource(Resource):
+    @jwt_required
+    def post(self, event_id):
+        parser = RequestParser()
+        parser.add_argument('class',
+            location='json',
+            help='This field cannot be blank',
+            required=True)
+
+        data = parser.parse_args()
+
+        # check if class is correct type
+        if data['class'] not in ["people", "landscape"]:
+            return {
+                'message': 'pictures field should not be empty'
+            }
+
+        event = EventModel.query.get(event_id)
+
+        # check if event exists
+        if not event:
+            return {
+                'message': 'Event id {} does not exist'.format(event_id)
+            }
+
+        # check if current_user has access to the group
+        username = get_jwt_identity()
+        group_id = event.group.id
+        group = GroupModel.query.join(GroupModel.users).filter(
+            UserModel.username == username,
+            GroupModel.id == group_id).first()
+
+        if not group:
+            return {
+                'message': 'Group id {} does not exist'.format(group_id)
+            }
+
+        current_user = UserModel.find_by_username(username)
+        new_sub = SubscriptionModel(
+            user_id=current_user.id,
+            event_id=event_id,
+            klass=data['class']
+        )
+
+        try:
+            new_sub.save_to_db()
+            return {
+                'message': 'Subscription has been created'
             }
         except:
             return {
