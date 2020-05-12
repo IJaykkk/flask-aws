@@ -43,11 +43,17 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         }
         ```
 
+        + Error (401)
+        ```bash
+        {
+            "message": "User <username> already exists"
+        }
+        ```
+
         + Failure (500)
         ```bash
         {
             "message": "Registration went wrong"
-        
         }
         ```
 
@@ -78,7 +84,7 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         }
         ```
         
-        + Failure (200)
+        + Error (401)
         ```bash
         {
             "message": "Wrong credentials"
@@ -172,14 +178,6 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         ]
         ```
 
-        + Failure (500)
-        ```bash
-        {
-            "message": "Something went wrong"
-        
-        }
-        ```
-
 ### Group
 + Get groups (access token)
     + Explaination:
@@ -207,11 +205,10 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         ]
         ```
 
-        + Failure (500)
+        + Error (403)
         ```bash
         {
-            "message": "Something went wrong"
-        
+            "message": "User <username> does not exist"
         }
         ```
 
@@ -254,11 +251,17 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         }
         ```
 
-        + Failure (500)
+        + Error (403)
         ```bash
         {
-            "message": "Something went wrong"
-        
+            "message": "User <username> does not exist"
+        }
+        ```
+
+        + Error (404)
+        ```bash
+        {
+            "message": "Group id {group_id} does not exist"
         }
         ```
         
@@ -287,11 +290,16 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         }
         ```
 
+        + Error (404)
+        ```bash
+        {
+            "message": "user_ids must be not empty list and its element must be integer"
+        }
+
         + Failure (500)
         ```bash
         {
             "message": "Something went wrong"
-        
         }
         ```
 
@@ -329,11 +337,10 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         ]
         ```
 
-        + Failure (500)
+        + Error (403)
         ```bash
         {
-            "message": "Something went wrong"
-        
+            "message": "User <username> does not exist"
         }
         ```
 
@@ -371,11 +378,18 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         }
         ```
 
-        + Failure (500)
+
+        + Error (403)
         ```bash
         {
-            "message": "Something went wrong"
-        
+            "message": "User <username> does not exist"
+        }
+        ```
+
+        + Error (404)
+        ```bash
+        {
+            "message": "Event id <event_id> does not exist"
         }
         ```
 
@@ -408,11 +422,24 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         }
         ```
 
+        + Error (404)
+        ```bash
+        {
+            "message": "group should not be empty hash. pictures should contain urls"
+        }
+        ```
+        
+        + Error (404)
+        ```bash
+        {
+            "message": "Group id <group_id> does not exist"
+        }
+        ```
+        
         + Failure (500)
         ```bash
         {
             "message": "Something went wrong"
-        
         }
         ```
 
@@ -440,12 +467,32 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
             "message": "Subscription has been created"
         }
         ```
+        
+        + Error (400)
+        ```bash
+        {
+            "message": "class field should not be empty"
+        }
+        ```
 
+        + Error (404)
+        ```bash
+        {
+            "message": "Group id <group_id> does not exist"
+        }
+        ```
+
+        + Error (404)
+        ```bash
+        {
+            "message": "Event id <event_id> does not exist"
+        }
+        ```
+        
         + Failure (500)
         ```bash
         {
             "message": "Something went wrong"
-        
         }
         ```
  
@@ -475,11 +522,31 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         }
         ```
 
+        + Error (400)
+        ```bash
+        {
+            "message": "Pictures has been registered"
+        }
+        ```
+
+        + Error (404)
+        ```bash
+        {
+            "message": "Event id <event_id> does not exist"
+        }
+        ```
+
+        + Error (404)
+        ```bash
+        {
+            "message": "Group id <group_id> does not exist"
+        }
+        ```
+
         + Failure (500)
         ```bash
         {
             "message": "Something went wrong"
-        
         }
         ```
         
@@ -507,11 +574,24 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
         }
         ```
 
+        + Error (400)
+        ```bash
+        {
+            "message": "bestshots field should not be empty"
+        }
+        ```
+        
+        + Error (404)
+        ```bash
+        {
+            "message": "Event id <event_id> does not exist"
+        }
+        ```
+
         + Failure (500)
         ```bash
         {
             "message": "Something went wrong"
-        
         }
         ```
 
@@ -538,11 +618,24 @@ To use token, include "Authorization: Bearer <access_token or refresh_token>" in
             "message": "Picture class has been registered"
         }
         ```
+        
+        + Error (400)
+        ```bash
+        {
+            "message": "classes field should not be empty"
+        }
+        ```
+
+        + Error (404)
+        ```bash
+        {
+            "message": "Event id <event_id> does not exist"
+        }
+        ```
 
         + Failure (500)
         ```bash
         {
             "message": "Something went wrong"
-        
         }
         ```
