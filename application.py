@@ -41,7 +41,7 @@ api.add_resource(groups.GroupResource, '/group/<int:group_id>')
 
 # Events
 api.add_resource(events.EventListResource, '/events')
-api.add_resource(events.EventResource, '/event/<int:id>')
+api.add_resource(events.EventResource, '/event/<int:event_id>')
 api.add_resource(events.PictureListResource, '/event/<int:event_id>/pictures')
 api.add_resource(events.SubscriptionResource, '/event/<int:event_id>/subscriptions')
 

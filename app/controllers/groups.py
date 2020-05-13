@@ -1,6 +1,6 @@
 from functools import wraps
 
-from flask import g
+from flask import g, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource, reqparse
 from flask_restful.reqparse import RequestParser
@@ -45,11 +45,13 @@ class GroupListResource(Resource):
                 help='This field cannot be blank')
 
             g.data = data = parser.parse_args()
+
             # check if user_ids list is empty and its content
-            if not data['user_ids'] or any(filter(lambda x: not isinstance(x, int), data['user_ids'])):
+            json = request.json
+            if not json['user_ids'] or not isinstance(json['user_ids'], list) or any(filter(lambda x: not isinstance(x, int), json['user_ids'])):
                 return {
                     'message': 'user_ids must be not empty list and its element must be integer'
-                }, 404
+                }, 400
 
             return fn(*args, **kwargs)
         return wrapped
@@ -58,13 +60,12 @@ class GroupListResource(Resource):
     @is_valid_post
     def post(self):
         data = g.data
-
         new_group = GroupModel(name=data['name'])
-        users = UserModel.query.filter(UserModel.id.in_(data['user_ids']))
-        for user in users:
-            new_group.users.append(user)
 
         try:
+            users = UserModel.query.filter(UserModel.id.in_(data['user_ids'])).all()
+            for user in users:
+                new_group.users.append(user)
             new_group.save_to_db()
             return {
                 'message': 'Group has been created'
@@ -81,12 +82,15 @@ class GroupResource(Resource):
         @wraps(fn)
         def wrapped(*args, **kwargs):
             username = get_jwt_identity()
+
+
             current_user = UserModel.find_by_username(username)
             if not current_user:
                 return {
                     'message': 'User {} does not exist'.format(username)
                 }, 401
 
+            # kwargs['group_id' is always int, so we don't need try and except block
             g.group = group = GroupModel.query.join(GroupModel.users).filter(
                 UserModel.username == username,
                 GroupModel.id == kwargs['group_id']).first()

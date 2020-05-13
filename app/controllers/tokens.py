@@ -23,9 +23,9 @@ class UserRegistration(Resource):
         @wraps(fn)
         def wrapped(*args, **kwargs):
             parser = RequestParser()
-            parser.add_argument('username', help = 'This field cannot be blank', required = True)
-            parser.add_argument('password', help = 'This field cannot be blank', required = True)
-            parser.add_argument('icon_url', help = 'This field cannot be blank', required = True)
+            parser.add_argument('username', type=str, help = 'This field cannot be blank', required = True)
+            parser.add_argument('password', type=str, help = 'This field cannot be blank', required = True)
+            parser.add_argument('icon_url', type=str, help = 'This field cannot be blank', required = True)
 
             g.data = data = parser.parse_args()
 
@@ -66,12 +66,11 @@ class UserLogin(Resource):
         @wraps(fn)
         def wrapped(*args, **kwargs):
             parser = RequestParser()
-            parser.add_argument('username', help = 'This field cannot be blank', required = True)
-            parser.add_argument('password', help = 'This field cannot be blank', required = True)
+            parser.add_argument('username', type=str, help = 'This field cannot be blank', required = True)
+            parser.add_argument('password', type=str, help = 'This field cannot be blank', required = True)
 
             g.data = data = parser.parse_args()
             g.current_user = current_user = UserModel.find_by_username(data['username'])
-
             if not current_user:
                 return {
                     'message': 'Wrong credentials'
