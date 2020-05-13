@@ -184,7 +184,7 @@ class SubscriptionResource(Resource):
         data = parser.parse_args()
 
         # check if class is correct type
-        if data['class'] not in ["people", "landscape", "people/landscape"]:
+        if data['class'] not in ['people', 'landscape']:
             return {
                 'message': 'class field should not be empty'
             }, 400
@@ -217,8 +217,8 @@ class SubscriptionResource(Resource):
                 user_id=current_user.id,
                 event_id=event_id,
                 klass=data['class'])
-        else:
-            sub.klass = data['class']
+        elif sub.klass != data['class']:
+            sub.klass = 'people/landscape'
 
         try:
             sub.save_to_db()

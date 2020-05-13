@@ -41,9 +41,15 @@ class EventModel(db.Model):
         if with_sub:
             sub = SubscriptionModel.query.filter_by(
                 user_id=with_sub, event_id=self.id).first()
-            tmp_dict = { 'class': sub.klass } if sub else {}
-            res.update({
-                'subscription': tmp_dict
-            })
+
+            if sub:
+                tmp = sub.to_json()
+            else:
+                tmp = {
+                    'people': False,
+                    'landscape': False
+                }
+
+            res.update({ 'subscription': tmp })
 
         return res

@@ -16,4 +16,10 @@ class SubscriptionModel(db.Model):
         db.session.commit()
 
     def to_json(self):
-        pass
+        res = {
+            'people': False,
+            'landscape': False
+        }
+        for k in self.klass.split('/'):
+            res[k] = True
+        return res
