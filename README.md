@@ -5,6 +5,8 @@ At project root directory,
 vagrant up
 vagrant ssh -- -L 5000:localhost:5000
 cd /vagrant/flask-aws
+mv .env.bk .env
+vim .env # update environment variables
 flask run
 ```
 
