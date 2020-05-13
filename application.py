@@ -16,6 +16,10 @@ jwt = JWTManager(app)
 from app.controllers import (tokens, users, groups, events, pictures)
 from app.models.revoked_token import RevokedTokenModel
 
+@app.teardown_appcontext
+def teardown_appcontext(response_or_exc):
+    db.session.remove()
+
 @jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):
     jti = decrypted_token['jti']
