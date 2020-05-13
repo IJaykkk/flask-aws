@@ -48,7 +48,9 @@ class GroupListResource(Resource):
 
             # check if user_ids list is empty and its content
             json = request.json
-            if not json['user_ids'] or not isinstance(json['user_ids'], list) or any(filter(lambda x: not isinstance(x, int), json['user_ids'])):
+            if not json['user_ids'] \
+                or not isinstance(json['user_ids'], list) \
+                or any(map(lambda x: not isinstance(x, int), json['user_ids'])):
                 return {
                     'message': 'user_ids must be not empty list and its element must be integer'
                 }, 400
