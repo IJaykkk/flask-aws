@@ -4,6 +4,7 @@ from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_r
 from flask_restful import Resource, reqparse
 from flask_restful.reqparse import RequestParser
 
+from app import db
 from app.models.user import UserModel
 from app.models.revoked_token import RevokedTokenModel
 
@@ -45,6 +46,7 @@ class UserRegistration(Resource):
                 'refresh_token': refresh_token
             }
         except:
+            db.session.rollback()
             return {
                 'message': 'Registration went wrong'
             }, 500
@@ -89,6 +91,7 @@ class UserLogoutAccess(Resource):
                 'message': 'Access token has been revoked'
             }
         except:
+            db.session.rollback()
             return {
                 'message': 'Logout access went wrong'
             }, 500
@@ -105,6 +108,7 @@ class UserLogoutRefresh(Resource):
                 'message': 'Refresh token has been revoked'
             }
         except:
+            db.session.rollback()
             return {
                 'message': 'Logout refresh went wrong'
             }, 500

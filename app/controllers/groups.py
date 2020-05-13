@@ -2,6 +2,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource, reqparse
 from flask_restful.reqparse import RequestParser
 
+from app import db
 from app.models.user import UserModel
 from app.models.group import GroupModel
 
@@ -49,6 +50,7 @@ class GroupListResource(Resource):
                 'message': 'Group has been created'
             }
         except:
+            db.session.rollback()
             return {
                 'message': 'Something went wrong'
             }, 500

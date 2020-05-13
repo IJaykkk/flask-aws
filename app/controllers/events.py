@@ -4,6 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource, reqparse
 from flask_restful.reqparse import RequestParser
 
+from app import db
 from app.models.user import UserModel
 from app.models.group import GroupModel
 from app.models.event import EventModel
@@ -86,6 +87,7 @@ class EventListResource(Resource):
                 'message': 'Event has been created'
             }
         except:
+            db.session.rollback()
             return {
                 'message': 'Something went wrong'
             }, 500
@@ -167,6 +169,7 @@ class PictureListResource(Resource):
                 'message': 'Pictures has been registered'
             }
         except:
+            db.session.rollback()
             return {
                 'message': 'Something went wrong'
             }, 500
@@ -226,6 +229,7 @@ class SubscriptionResource(Resource):
                 'message': 'Subscription has been created'
             }
         except:
+            db.session.rollback()
             return {
                 'message': 'Something went wrong'
             }, 500
