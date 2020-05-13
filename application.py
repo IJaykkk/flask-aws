@@ -37,7 +37,7 @@ api.add_resource(users.UserListResource, '/users')
 
 # Groups
 api.add_resource(groups.GroupListResource, '/groups')
-api.add_resource(groups.GroupResource, '/group/<int:id>')
+api.add_resource(groups.GroupResource, '/group/<int:group_id>')
 
 # Events
 api.add_resource(events.EventListResource, '/events')

@@ -1,3 +1,6 @@
+from functools import wraps
+
+from flask import g
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource, reqparse
 from flask_restful.reqparse import RequestParser
@@ -8,36 +11,53 @@ from app.models.group import GroupModel
 
 
 class GroupListResource(Resource):
+    def is_valid_get(fn):
+        @wraps(fn)
+        def wrapped(*args, **kwargs):
+            username = get_jwt_identity()
+
+            g.current_user = current_user = UserModel.find_by_username(username)
+            if not current_user:
+                return {
+                    'message': 'User {} does not exist'.format(username)
+                }, 401
+
+            return fn(*args, **kwargs)
+        return wrapped
+
     @jwt_required
+    @is_valid_get
     def get(self):
-        username = get_jwt_identity()
-        current_user = UserModel.find_by_username(username)
-
-        if not current_user:
-            return {
-                'message': 'User {} does not exist'.format(username)
-            }, 403
-
+        current_user = g.current_user
         return list(map(lambda x: x.to_json(with_user=True), current_user.groups))
 
+    def is_valid_post(fn):
+        @wraps(fn)
+        def wrapped(*args, **kwargs):
+            parser = RequestParser()
+            parser.add_argument('name',
+                type=str,
+                help='This field cannot be blank',
+                required=True)
+            parser.add_argument('user_ids',
+                type=list,
+                location='json',
+                help='This field cannot be blank')
+
+            g.data = data = parser.parse_args()
+            # check if user_ids list is empty and its content
+            if not data['user_ids'] or any(filter(lambda x: not isinstance(x, int), data['user_ids'])):
+                return {
+                    'message': 'user_ids must be not empty list and its element must be integer'
+                }, 404
+
+            return fn(*args, **kwargs)
+        return wrapped
+
     @jwt_required
+    @is_valid_post
     def post(self):
-        parser = RequestParser()
-        parser.add_argument('name',
-            help='This field cannot be blank',
-            required=True)
-        parser.add_argument('user_ids',
-            type=list,
-            location='json',
-            help='This field cannot be blank')
-
-        data = parser.parse_args()
-
-        # Only check if user_ids list is empty
-        if not data['user_ids'] or isinstance(data['user_ids'][0], str):
-            return {
-                'message': 'user_ids must be not empty list and its element must be integer'
-            }, 404
+        data = g.data
 
         new_group = GroupModel(name=data['name'])
         users = UserModel.query.filter(UserModel.id.in_(data['user_ids']))
@@ -57,24 +77,31 @@ class GroupListResource(Resource):
 
 
 class GroupResource(Resource):
+    def is_valid_get(fn):
+        @wraps(fn)
+        def wrapped(*args, **kwargs):
+            username = get_jwt_identity()
+            current_user = UserModel.find_by_username(username)
+            if not current_user:
+                return {
+                    'message': 'User {} does not exist'.format(username)
+                }, 401
+
+            g.group = group = GroupModel.query.join(GroupModel.users).filter(
+                UserModel.username == username,
+                GroupModel.id == kwargs['group_id']).first()
+            if not group:
+                return {
+                    'message': 'Group id {} does not exist'.format(kwargs['group_id'])
+                }, 404
+
+            return fn(*args, **kwargs)
+        return wrapped
+
     @jwt_required
-    def get(self, id):
-        username = get_jwt_identity()
-        current_user = UserModel.find_by_username(username)
-
-        if not current_user:
-            return {
-                'message': 'User {} does not exist'.format(username)
-            }, 403
-
-        group = GroupModel.query.join(GroupModel.users).filter(
-            UserModel.username == username,
-            GroupModel.id == id).first()
-
-        if not group:
-            return {
-                'message': 'Group id {} does not exist'.format(id)
-            }, 404
+    @is_valid_get
+    def get(self, group_id):
+        group = g.group
 
         res = group.to_json(with_user=True)
         res.update({
