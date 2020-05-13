@@ -1,6 +1,8 @@
 import os
 from threading import Thread
+from functools import wraps
 
+from flask import g, request
 from flask_jwt_extended import (create_refresh_token, jwt_refresh_token_required)
 from flask_restful import Resource, reqparse
 from flask_restful.reqparse import RequestParser
@@ -29,41 +31,59 @@ class Compute(Thread):
 
 
 class PictureBestshotResource(Resource):
+    def is_valid_post(fn):
+        @wraps(fn)
+        def wrapped(*args, **kwargs):
+            parser = RequestParser()
+            parser.add_argument('event_id',
+                type=str,
+                location='json',
+                help='This field cannot be blank',
+                required=True)
+            parser.add_argument('bestshots',
+                type=list,
+                location='json',
+                help='This field cannot be blank',
+                required=True)
+
+            g.data = data = parser.parse_args()
+            json = request.json
+
+            # check event_id
+            if not data['event_id'].isdigit():
+                return {
+                    'message': 'event_id field should be int'
+                }, 400
+
+            # check if group json or bestshots list are empty
+            if not json['bestshots'] \
+                or not isinstance(json['bestshots'], list) \
+                or any(map(lambda x: not isinstance(x, str), json['bestshots'])):
+
+                return {
+                    'message': 'bestshots field should not be empty and its elements are str'
+                }, 400
+
+            # check if event exists
+            event_id = int(data['event_id'])
+            event = EventModel.query.get(event_id)
+            if not event:
+                return {
+                    'message': 'Event id {} does not exist'.format(event_id)
+                }, 404
+
+            return fn(*args, **kwargs)
+        return wrapped
+
     @jwt_refresh_token_required
+    @is_valid_post
     def post(self):
-        parser = RequestParser()
-        parser.add_argument('event_id',
-            location='json',
-            help='This field cannot be blank',
-            required=True)
-        parser.add_argument('bestshots',
-            type=list,
-            location='json',
-            help='This field cannot be blank',
-            required=True)
-
-        data = parser.parse_args()
-
-        # check if group json or bestshots list are empty
-        if not data['bestshots']:
-            return {
-                'message': 'bestshots field should not be empty'
-            }, 400
-
-        event_id = int(data['event_id'])
-        event = EventModel.query.get(event_id)
-
-        # check if event exists
-        if not event:
-            return {
-                'message': 'Event id {} does not exist'.format(event_id)
-            }, 404
-
-        pictures = PictureModel.query.filter(
-            PictureModel.event_id == event_id,
-            PictureModel.url.in_(data['bestshots'])).all()
+        data = g.data
 
         try:
+            pictures = PictureModel.query.filter(
+                PictureModel.event_id == data['event_id'],
+                PictureModel.url.in_(data['bestshots'])).all()
             for picture in pictures:
                 picture.is_bestshot = True
                 db.session.add(picture)
@@ -79,41 +99,51 @@ class PictureBestshotResource(Resource):
 
 
 class PictureClassResource(Resource):
+    def is_valid_post(fn):
+        @wraps(fn)
+        def wrapped(*args, **kwargs):
+            parser = RequestParser()
+            parser.add_argument('event_id',
+                location='json',
+                help='This field cannot be blank',
+                required=True)
+            parser.add_argument('classes',
+                type=dict,
+                location='json',
+                help='This field cannot be blank',
+                required=True)
+
+            g.data = data = parser.parse_args()
+            json = request.json
+
+            # check if classes is dict
+            if not json['classes'] or not isinstance(json['classes'], dict):
+                return {
+                    'message': 'classes field should not be empty'
+                }, 400
+
+            # check if event exists
+            event_id = int(data['event_id'])
+            g.event = event = EventModel.query.get(event_id)
+            if not event:
+                return {
+                    'message': 'Event id {} does not exist'.format(event_id)
+                }, 404
+
+            return fn(*args, **kwargs)
+        return wrapped
+
     @jwt_refresh_token_required
+    @is_valid_post
     def post(self):
-        parser = RequestParser()
-        parser.add_argument('event_id',
-            location='json',
-            help='This field cannot be blank',
-            required=True)
-        parser.add_argument('classes',
-            type=dict,
-            location='json',
-            help='This field cannot be blank',
-            required=True)
-
-        data = parser.parse_args()
-
-        # check if group json or bestshots list are empty
-        if not data['classes']:
-            return {
-                'message': 'classes field should not be empty'
-            }, 400
-
-        event_id = int(data['event_id'])
-        event = EventModel.query.get(event_id)
-
-        # check if event exists
-        if not event:
-            return {
-                'message': 'Event id {} does not exist'.format(event_id)
-            }, 404
-
-        pictures = PictureModel.query.filter(
-            PictureModel.event_id == event_id,
-            PictureModel.url.in_(data['classes'].keys())).all()
+        data = g.data
+        event = g.event
 
         try:
+            pictures = PictureModel.query.filter(
+                PictureModel.event_id == data['event_id'],
+                PictureModel.url.in_(data['classes'].keys())).all()
+
             for picture in pictures:
                 picture.klass = data['classes'][picture.url]
                 db.session.add(picture)
