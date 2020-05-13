@@ -1,3 +1,6 @@
+import os
+from threading import Thread
+
 from flask_jwt_extended import (create_refresh_token, jwt_refresh_token_required)
 from flask_restful import Resource, reqparse
 from flask_restful.reqparse import RequestParser
@@ -5,6 +8,24 @@ from flask_restful.reqparse import RequestParser
 from app import db
 from app.models.picture import PictureModel
 from app.models.event import EventModel
+
+
+class Compute(Thread):
+    def __init__(self, klasses, event):
+        Thread.__init__(self)
+        self.klasses = klasses
+        self.event = event
+
+    def run(self):
+        print('Start: Send MQTT to broker...')
+
+        for klass in set(self.klasses.values()):
+            cmd = "mqtt pub -t '{}/{}' -h '{}' -p '{}' -m 'Someone uploaded photos of {} in {} event'  -C 'wss' -u '{}' -P '{}'".format(
+                self.event.id, klass, os.environ['BROKER_HOST'], os.environ['BROKER_PORT'],
+                klass, self.event.name, os.environ['BROKER_USER'], os.environ['BROKER_PASSWORD'])
+            os.system(cmd)
+
+        print('End: Send MQTT to broker...')
 
 
 class PictureBestshotResource(Resource):
@@ -97,6 +118,11 @@ class PictureClassResource(Resource):
                 picture.klass = data['classes'][picture.url]
                 db.session.add(picture)
             db.session.commit()
+
+            # mqtt send
+            thread = Compute(data['classes'], event)
+            thread.start()
+
             return {
                 'message': 'Picture class has been registered'
             }
