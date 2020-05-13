@@ -14,6 +14,7 @@ class Config(object):
     JWT_BLACKLIST_ENABLED = True
     JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=1800)
+    SQLALCHEMY_ECHO = True
 
 
 class ProductionConfig(Config):

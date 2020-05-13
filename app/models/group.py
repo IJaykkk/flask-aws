@@ -6,7 +6,7 @@ class GroupModel(db.Model):
     __tablename__ = 'groups'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), unique=True, nullable=False)
+    name = db.Column(db.String(120), nullable=False)
 
     events = db.relationship('EventModel', backref='group', lazy=False)
 
