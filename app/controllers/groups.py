@@ -70,6 +70,7 @@ class GroupListResource(Resource):
                 new_group.users.append(user)
             new_group.save_to_db()
             return {
+                'id': new_group.id,
                 'message': 'Group has been created'
             }
         except:

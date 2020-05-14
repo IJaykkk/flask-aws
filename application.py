@@ -38,6 +38,7 @@ api.add_resource(tokens.TokenRefresh, '/token/refresh')
 
 # Users
 api.add_resource(users.UserListResource, '/users')
+api.add_resource(users.UserResource, '/user')
 
 # Groups
 api.add_resource(groups.GroupListResource, '/groups')

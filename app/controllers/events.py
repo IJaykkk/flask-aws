@@ -6,7 +6,7 @@ from datetime import datetime
 from functools import wraps
 
 from flask import g, request
-from flask_jwt_extended import jwt_required, get_jwt_identity, get_raw_jwt
+from flask_jwt_extended import (jwt_required, get_jwt_identity, create_access_token)
 from flask_restful import Resource, reqparse
 from flask_restful.reqparse import RequestParser
 
@@ -18,6 +18,12 @@ from app.models.event import PictureModel
 from app.models.subscription import SubscriptionModel
 
 flatten = itertools.chain.from_iterable
+
+def to_identity(username):
+    return {
+        'username': username,
+        'time': datetime.now().strftime("%m/%d/%Y %H:%M:%S")
+    }
 
 
 class SendRequest(Thread):
@@ -31,7 +37,7 @@ class SendRequest(Thread):
     def run(self):
         print('Start: Send pics to ML...')
 
-        headers = { 'Authorization': 'bearer {}'.format(self.token) }
+        headers = { 'Authorization': 'Bearer {}'.format(self.token) }
 
         # class
         json = {
@@ -173,12 +179,14 @@ class EventListResource(Resource):
             new_event.save_to_db()
 
             # send request to machine learning
-            token = get_raw_jwt()['jti']
+            username = get_jwt_identity()
+            token = create_access_token(identity=to_identity(username))
             pics = list(map(lambda x: x.url, new_event.pictures))
             thread = SendRequest(pics, pics, new_event.id, token)
             thread.start()
 
             return {
+                'id': new_event.id,
                 'message': 'Event has been created'
             }
         except:
@@ -286,7 +294,8 @@ class PictureListResource(Resource):
             event.save_to_db()
 
             # send request to machine learning
-            token = get_raw_jwt()['jti']
+            username = get_jwt_identity()
+            token = create_access_token(identity=to_identity(username))
             pics = list(map(lambda x: x.url, event.pictures))
             thread = SendRequest(data['pictures'], pics, event.id, token)
             thread.start()
