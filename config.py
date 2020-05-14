@@ -20,7 +20,7 @@ class Config(object):
     BROKER_PASSWORD=os.environ['BROKER_PASSWORD']
     ML_BEST_ENDPOINT=os.environ['ML_BEST_ENDPOINT']
     ML_CLASS_ENDPOINT=os.environ['ML_CLASS_ENDPOINT']
-    SQLALCHEMY_ECHO = True
+    #  SQLALCHEMY_ECHO = True
 
 
 class ProductionConfig(Config):
