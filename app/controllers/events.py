@@ -1,9 +1,12 @@
+import os
 import itertools
+import requests
+from threading import Thread
 from datetime import datetime
 from functools import wraps
 
 from flask import g, request
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_raw_jwt
 from flask_restful import Resource, reqparse
 from flask_restful.reqparse import RequestParser
 
@@ -15,6 +18,44 @@ from app.models.event import PictureModel
 from app.models.subscription import SubscriptionModel
 
 flatten = itertools.chain.from_iterable
+
+
+class SendRequest(Thread):
+    def __init__(self, partial_pics, all_pics, event_id, token):
+        Thread.__init__(self)
+        self.partial_pics = partial_pics
+        self.all_pics = all_pics
+        self.event_id = event_id
+        self.token = token
+
+    def run(self):
+        print('Start: Send pics to ML...')
+
+        headers = { 'Authorization': 'bearer {}'.format(self.token) }
+
+        # class
+        json = {
+            'event_id': str(self.event_id),
+            'file_names': self.partial_pics
+        }
+        try:
+            requests.post(os.environ['ML_CLASS_ENDPOINT'], json=json, headers=headers)
+            print("request to {} succeeded".format(os.environ['ML_CLASS_ENDPOINT']))
+        except:
+            print("request to {} failed".format(os.environ['ML_CLASS_ENDPOINT']))
+
+        # bestshosts
+        json = {
+            'event_id': str(self.event_id),
+            'file_names': self.all_pics
+        }
+        try:
+            requests.post(os.environ['ML_BEST_ENDPOINT'], json=json, headers=headers)
+            print("request to {} succeeded".format(os.environ['ML_BEST_ENDPOINT']))
+        except:
+            print("request to {} failed".format(os.environ['ML_BEST_ENDPOINT']))
+
+        print('End: Send pics to ML...')
 
 
 class EventListResource(Resource):
@@ -130,6 +171,13 @@ class EventListResource(Resource):
 
         try:
             new_event.save_to_db()
+
+            # send request to machine learning
+            token = get_raw_jwt()['jti']
+            pics = list(map(lambda x: x.url, new_event.pictures))
+            thread = SendRequest(pics, pics, new_event.id, token)
+            thread.start()
+
             return {
                 'message': 'Event has been created'
             }
@@ -236,6 +284,13 @@ class PictureListResource(Resource):
 
         try:
             event.save_to_db()
+
+            # send request to machine learning
+            token = get_raw_jwt()['jti']
+            pics = list(map(lambda x: x.url, event.pictures))
+            thread = SendRequest(data['pictures'], pics, event.id, token)
+            thread.start()
+
             return {
                 'message': 'Pictures has been registered'
             }

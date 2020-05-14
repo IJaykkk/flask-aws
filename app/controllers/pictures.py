@@ -3,7 +3,7 @@ from threading import Thread
 from functools import wraps
 
 from flask import g, request
-from flask_jwt_extended import (create_refresh_token, jwt_refresh_token_required)
+from flask_jwt_extended import (create_refresh_token, jwt_required)
 from flask_restful import Resource, reqparse
 from flask_restful.reqparse import RequestParser
 
@@ -12,19 +12,22 @@ from app.models.picture import PictureModel
 from app.models.event import EventModel
 
 
-class Compute(Thread):
-    def __init__(self, klasses, event):
+class MQTT(Thread):
+    def __init__(self, klasses, event_id, event_name):
         Thread.__init__(self)
         self.klasses = klasses
-        self.event = event
+        self.event_id = event_id
+        self.event_name = event_name
 
     def run(self):
         print('Start: Send MQTT to broker...')
 
         for klass in set(self.klasses.values()):
             cmd = "mqtt pub -t '{}/{}' -h '{}' -p '{}' -m 'Someone uploaded photos of {} in {} event'  -C 'wss' -u '{}' -P '{}'".format(
-                self.event.id, klass, os.environ['BROKER_HOST'], os.environ['BROKER_PORT'],
-                klass, self.event.name, os.environ['BROKER_USER'], os.environ['BROKER_PASSWORD'])
+                self.event_id, klass,
+                os.environ['BROKER_HOST'], os.environ['BROKER_PORT'],
+                klass, self.event_name,
+                os.environ['BROKER_USER'], os.environ['BROKER_PASSWORD'])
             os.system(cmd)
 
         print('End: Send MQTT to broker...')
@@ -75,7 +78,7 @@ class PictureBestshotResource(Resource):
             return fn(*args, **kwargs)
         return wrapped
 
-    @jwt_refresh_token_required
+    @jwt_required
     @is_valid_post
     def post(self):
         data = g.data
@@ -133,7 +136,7 @@ class PictureClassResource(Resource):
             return fn(*args, **kwargs)
         return wrapped
 
-    @jwt_refresh_token_required
+    @jwt_required
     @is_valid_post
     def post(self):
         data = g.data
@@ -150,7 +153,7 @@ class PictureClassResource(Resource):
             db.session.commit()
 
             # mqtt send
-            thread = Compute(data['classes'], event)
+            thread = MQTT(data['classes'], event.id, event.name)
             thread.start()
 
             return {

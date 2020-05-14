@@ -13,7 +13,13 @@ class Config(object):
     JWT_SECRET_KEY = os.environ['JWT_SECRET_KEY']
     JWT_BLACKLIST_ENABLED = True
     JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=1800)
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(seconds=10800)
+    BROKER_HOST=os.environ['BROKER_HOST']
+    BROKER_PORT=os.environ['BROKER_PORT']
+    BROKER_USER=os.environ['BROKER_USER']
+    BROKER_PASSWORD=os.environ['BROKER_PASSWORD']
+    ML_BEST_ENDPOINT=os.environ['ML_BEST_ENDPOINT']
+    ML_CLASS_ENDPOINT=os.environ['ML_CLASS_ENDPOINT']
     SQLALCHEMY_ECHO = True
 
 
