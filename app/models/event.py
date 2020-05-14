@@ -32,6 +32,7 @@ class EventModel(db.Model):
 
         pictures = self.pictures if multi_pics else [self.pictures[0]]
         res.update({
+            'pictures_size': len(pictures),
             'pictures': list(map(
                 lambda x: x.to_json(),
                 pictures))
