@@ -81,10 +81,10 @@ class EventListResource(Resource):
     @is_valid_get
     def get(self):
         current_user = g.current_user
+        groups = GroupModel.query.with_parent(current_user).all()
         events = flatten(list(map(
             lambda x: x.events,
-            current_user.groups)))
-
+            groups)))
         return list(map(
             lambda x: x.to_json(with_group=True, multi_pics=False),
             events))

@@ -1,4 +1,5 @@
 import os
+
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
@@ -18,7 +19,7 @@ from app.models.revoked_token import RevokedTokenModel
 
 @app.teardown_appcontext
 def teardown_appcontext(response_or_exc):
-    db.session.remove()
+    db.session.close()
 
 @jwt.token_in_blacklist_loader
 def check_if_token_in_blacklist(decrypted_token):

@@ -8,6 +8,7 @@ from flask_restful.reqparse import RequestParser
 from app import db
 from app.models.user import UserModel
 from app.models.group import GroupModel
+from app.models.group import EventModel
 
 
 class GroupListResource(Resource):
@@ -29,7 +30,8 @@ class GroupListResource(Resource):
     @is_valid_get
     def get(self):
         current_user = g.current_user
-        return list(map(lambda x: x.to_json(with_user=True), current_user.groups))
+        groups = GroupModel.query.with_parent(current_user).all()
+        return list(map(lambda x: x.to_json(with_user=True), groups))
 
     def is_valid_post(fn):
         @wraps(fn)
@@ -86,7 +88,6 @@ class GroupResource(Resource):
         def wrapped(*args, **kwargs):
             username = get_jwt_identity()
 
-
             current_user = UserModel.find_by_username(username)
             if not current_user:
                 return {
@@ -110,11 +111,12 @@ class GroupResource(Resource):
     def get(self, group_id):
         group = g.group
 
+        events = EventModel.query.filter_by(group_id=group.id).all()
         res = group.to_json(with_user=True)
         res.update({
             'events': list(map(
                 lambda x: x.to_json(with_group=False, multi_pics=False),
-                group.events))
+                events))
         })
 
         return res
